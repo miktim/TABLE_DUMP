@@ -3,6 +3,7 @@
 Dumps rows from query or cursor to the console
 
 Usage:
+
 declare
   l_cursor dump_data.ref_cursor;
   l_object_type varchar2(100) := 'PROCEDURE';
