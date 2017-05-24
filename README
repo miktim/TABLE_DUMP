@@ -8,11 +8,11 @@ declare
   l_cursor table_dump.ref_cursor;
   l_object_type varchar2(100) := 'PROCEDURE';
 begin
-  table_dump.out('select * from user_objects where object_type = '''
+  table_dump.put('select * from user_objects where object_type = '''
     ||l_object_type||'''', 5, 5);
 -- OR
   open l_cursor for select * from user_objects where object_type = l_object_type;
-  table_dump.out(l_cursor);
+  table_dump.put(l_cursor);
 exception
   when others then
     dbms_output.put_line ( DBMS_UTILITY.FORMAT_ERROR_STACK() );
