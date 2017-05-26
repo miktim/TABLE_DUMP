@@ -2,7 +2,7 @@ CREATE OR REPLACE PACKAGE  "TABLE_DUMP" as
 /*
   Dump rows of query or cursor to the console.
   
-  Based on the example from Oracle documentation:
+  Based on an example from the Oracle documentation:
     https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/dynamic.htm#BHCHJBHJ
   2017-05-24 miktim@mail.ru
   2017-05-26 'rows returned' message added
