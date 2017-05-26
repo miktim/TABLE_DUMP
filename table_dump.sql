@@ -22,7 +22,7 @@ procedure put
 /* Usage:
 declare
   l_cursor table_dump.ref_cursor;
-  l_object_type varchar2(100) := 'PROCEDURE';
+  l_object_type varchar2(100) := 'PACKAGE';
 begin
   table_dump.put('select * from user_objects where object_type = '''
     ||l_object_type||'''', 5, 5);
