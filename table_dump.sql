@@ -48,10 +48,11 @@ is
   desctab DBMS_SQL.DESC_TAB;
   colcnt  NUMBER;
   namevar VARCHAR2(32767);
+
   outline VARCHAR2(32767);
-  
   l_rows  pls_integer := p_rows;
-  l_width pls_integer := case when p_width <= 0 then 32767 else p_width end;BEGIN
+  l_width pls_integer := case when p_width <= 0 then 32767 else p_width end;
+BEGIN
   -- Switch from native dynamic SQL to DBMS_SQL package:
   curid := DBMS_SQL.TO_CURSOR_NUMBER(p_cursor);
   DBMS_SQL.DESCRIBE_COLUMNS(curid, colcnt, desctab);
@@ -64,25 +65,31 @@ is
       DBMS_SQL.DEFINE_COLUMN(curid, i, namevar, 32767);
     end if;
     outline := outline || desctab(i).col_name 
-      || case when i < colcnt then ' | ' else '' end;  END LOOP;
+      || case when i < colcnt then ' | ' else '' end;
+  END LOOP;
   dbms_output.put_line(outline);
   -- Fetch rows with DBMS_SQL package:
-  WHILE DBMS_SQL.FETCH_ROWS(curid) > 0 LOOP    EXIT WHEN l_rows = 0;
-    outline := '';    FOR i IN 1 .. colcnt LOOP
+  WHILE DBMS_SQL.FETCH_ROWS(curid) > 0 LOOP
+    EXIT WHEN l_rows = 0;
+    outline := '';
+    FOR i IN 1 .. colcnt LOOP
       begin
         DBMS_SQL.COLUMN_VALUE(curid, i, namevar);
       exception when others then
-        namevar := '[datatype'||desctab(i).col_type||']';      end; 
+        namevar := '[datatype'||desctab(i).col_type||']';
+      end; 
       outline := outline 
         || case 
              when length(namevar) > l_width then substr(namevar,1,l_width) || '>'
              else namevar || ' ' end
-        || case when i < colcnt then '| ' else '' end;    END LOOP;
+        || case when i < colcnt then '| ' else '' end;
+    END LOOP;
     dbms_output.put_line(outline);
     l_rows := l_rows - 1;
   END LOOP;
   if l_rows = 0 then
-    dbms_output.put_line('More than '|| p_rows ||' rows available.');  end if;
+    dbms_output.put_line('More than '|| p_rows ||' rows available.');
+  end if;
   DBMS_SQL.CLOSE_CURSOR(curid);
 END;
 
