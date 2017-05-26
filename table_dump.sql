@@ -79,12 +79,18 @@ BEGIN
         DBMS_SQL.COLUMN_VALUE(curid, i, namevar);
       exception when others then
         namevar := '[datatype'||desctab(i).col_type||']';
-      end; 
-      outline := outline 
-        || case 
+      end;
+      begin
+        outline := outline 
+          || case 
              when length(namevar) > l_width then substr(namevar,1,l_width) || '>'
              else namevar || ' ' end
-        || case when i < colcnt then '| ' else '' end;
+          || case when i < colcnt then '| ' else '' end;
+      exception
+-- outline overflow
+        when others then
+          exit;
+     end;
     END LOOP;
     dbms_output.put_line(outline);
     l_rows := l_rows - 1;
