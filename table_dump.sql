@@ -5,6 +5,7 @@ CREATE OR REPLACE PACKAGE  "TABLE_DUMP" as
   Based on the example from Oracle documentation:
     https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/dynamic.htm#BHCHJBHJ
   2017-05-24 miktim@mail.ru
+  2017-05-26 'rows returned' message added
 */
 
 Type ref_cursor IS REF CURSOR;
@@ -52,6 +53,7 @@ is
   outline VARCHAR2(32767);
   l_rows  pls_integer := p_rows;
   l_width pls_integer := case when p_width <= 0 then 32767 else p_width end;
+  l_rowcnt pls_integer := 0;
 BEGIN
   -- Switch from native dynamic SQL to DBMS_SQL package:
   curid := DBMS_SQL.TO_CURSOR_NUMBER(p_cursor);
@@ -86,11 +88,18 @@ BEGIN
     END LOOP;
     dbms_output.put_line(outline);
     l_rows := l_rows - 1;
+    l_rowcnt := l_rowcnt + 1;
   END LOOP;
   if l_rows = 0 then
     dbms_output.put_line('More than '|| p_rows ||' rows available.');
+  else
+    dbms_output.put_line( l_rowcnt ||' rows returned.');
   end if;
   DBMS_SQL.CLOSE_CURSOR(curid);
+exception
+  when others then
+    DBMS_SQL.CLOSE_CURSOR(curid); 
+    raise;
 END;
 
 procedure put 
@@ -108,4 +117,4 @@ begin
 end;
 
 end "TABLE_DUMP";
-/
+/ 
